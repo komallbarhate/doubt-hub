@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>DoubtHub</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body{
+font-family:Arial;
+background:linear-gradient(135deg,#4facfe,#00f2fe);
+margin:0;
+min-height:100vh;
+}
+
+.navbar{
+background:rgba(0,0,0,0.15);
+padding:15px 30px;
+color:white;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.container{
+display:flex;
+justify-content:center;
+margin-top:60px;
+padding:20px;
+}
+
+.card{
+background:white;
+width:600px;
+padding:35px;
+border-radius:14px;
+box-shadow:0 15px 35px rgba(0,0,0,0.2);
+}
+
+input{
+width:100%;
+padding:12px;
+margin-top:12px;
+border-radius:6px;
+border:1px solid #ddd;
+font-size:15px;
+}
+
+button{
+margin-top:15px;
+padding:12px;
+background:#4facfe;
+border:none;
+color:white;
+cursor:pointer;
+border-radius:6px;
+font-size:16px;
+width:100%;
+}
+
+.checkboxRow{
+margin-top:12px;
+display:flex;
+align-items:center;
+gap:6px;
+}
+
+.checkboxRow input{
+width:auto;
+}
+
+#suggestions{
+background:white;
+border:1px solid #ddd;
+border-top:none;
+max-height:150px;
+overflow-y:auto;
+position:absolute;
+width:100%;
+z-index:10;
+}
+
+.suggestionItem{
+padding:10px;
+cursor:pointer;
+}
+
+.suggestionItem:hover{
+background:#f0f0f0;
+}
+
+.subjectBox{
+position:relative;
+}
+
+.doubtCard{
+background:#fafafa;
+border:1px solid #eee;
+padding:12px;
+margin-top:12px;
+border-radius:6px;
+display:flex;
+justify-content:space-between;
+}
+
+.deleteBtn{
+background:red;
+border:none;
+color:white;
+padding:6px 10px;
+border-radius:4px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="navbar">
+
+<div>📚 DoubtHub</div>
+
+<div>9404278044 | Mumbai</div>
+
+</div>
+
+<div class="container">
+
+<div class="card">
+
+<h2>Ask a Doubt</h2>
+
+<input id="nameInput" placeholder="Your name">
+
+<div class="subjectBox">
+<input id="topicInput" placeholder="Type subject (e.g. DBMS, Machine Learning)">
+<div id="suggestions"></div>
+</div>
+
+<input id="doubtInput" placeholder="Type your doubt">
+
+<div class="checkboxRow">
+<input type="checkbox" id="anonymousBox">
+<span>Ask anonymously</span>
+</div>
+
+<button onclick="submitDoubt()">Submit Doubt</button>
+
+<div id="doubtList"></div>
+
+</div>
+
+</div>
+
+<script>
+
+const subjects=[
+
+"Engineering Mathematics",
+"Engineering Physics",
+"Engineering Chemistry",
+"Engineering Mechanics",
+"Programming in C",
+"Data Structures",
+"Object Oriented Programming",
+"Discrete Structures",
+"Analysis of Algorithms",
+"Database Management System",
+"Operating System",
+"Computer Networks",
+"Software Engineering",
+"Artificial Intelligence",
+"Machine Learning",
+"Theory of Computation",
+"Compiler Design",
+"Cloud Computing",
+"Cyber Security",
+"Big Data Analytics",
+"Internet of Things",
+"Digital Communication",
+"Heat Transfer",
+"Thermodynamics",
+"Fluid Mechanics",
+"Structural Analysis",
+"Geotechnical Engineering",
+"Transportation Engineering"
+
+]
+
+const input=document.getElementById("topicInput")
+const suggestionBox=document.getElementById("suggestions")
+
+input.addEventListener("input",function(){
+
+let value=this.value.toLowerCase()
+
+suggestionBox.innerHTML=""
+
+if(value==="") return
+
+subjects.forEach(sub=>{
+
+if(sub.toLowerCase().includes(value)){
+
+let div=document.createElement("div")
+div.className="suggestionItem"
+div.innerText=sub
+
+div.onclick=function(){
+input.value=sub
+suggestionBox.innerHTML=""
+}
+
+suggestionBox.appendChild(div)
+
+}
+
+})
+
+})
+
+async function submitDoubt(){
+
+let name=document.getElementById("nameInput").value
+let topic=document.getElementById("topicInput").value
+let text=document.getElementById("doubtInput").value
+let anonymous=document.getElementById("anonymousBox").checked
+
+await fetch("/addDoubt",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({name,text,topic,anonymous})
+
+})
+
+document.getElementById("doubtInput").value=""
+
+loadDoubts()
+
+}
+
+async function deleteDoubt(id){
+
+await fetch("/deleteDoubt/"+id,{
+method:"DELETE"
+})
+
+loadDoubts()
+
+}
+
+async function loadDoubts(){
+
+const res=await fetch("/getDoubts")
+const doubts=await res.json()
+
+const list=document.getElementById("doubtList")
+
+list.innerHTML=""
+
+doubts.forEach(d=>{
+
+let card=document.createElement("div")
+card.className="doubtCard"
+
+let text=document.createElement("span")
+text.innerHTML=d.name+" ("+d.topic+"): "+d.text+" 👍 "+d.votes
+
+let del=document.createElement("button")
+del.className="deleteBtn"
+del.innerText="Delete"
+
+del.onclick=function(){
+deleteDoubt(d._id)
+}
+
+card.appendChild(text)
+card.appendChild(del)
+
+list.appendChild(card)
+
+})
+
+}
+
+loadDoubts()
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>QR Access</title>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+
+<script>
+
+/* PAGE LOCK */
+
+if(localStorage.getItem("role")!=="teacher"){
+
+alert("Teachers only")
+
+window.location="home.html"
+
+}
+
+</script>
+
+<style>
+
+body{
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+background:#4facfe;
+font-family:Arial;
+}
+
+.card{
+background:white;
+padding:40px;
+border-radius:10px;
+text-align:center;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h2>Scan to Join DoubtHub</h2>
+
+<div id="qrcode"></div>
+
+</div>
+
+<script>
+
+new QRCode(document.getElementById("qrcode"),{
+text:window.location.origin,
+width:200,
+height:200
+})
+
+</script>
+
+</body>
+
+</html>

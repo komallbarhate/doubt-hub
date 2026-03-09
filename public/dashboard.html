@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Teacher Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+/* PAGE LOCK */
+
+if(localStorage.getItem("role")!=="teacher"){
+
+alert("Access denied")
+
+window.location="home.html"
+
+}
+
+</script>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f5f7fb;
+margin:0;
+}
+
+.navbar{
+background:#4facfe;
+padding:15px;
+color:white;
+display:flex;
+justify-content:space-between;
+}
+
+.container{
+width:900px;
+margin:auto;
+margin-top:30px;
+background:white;
+padding:30px;
+border-radius:10px;
+}
+
+.tools{
+display:flex;
+gap:10px;
+margin-bottom:20px;
+}
+
+button{
+padding:10px 15px;
+background:#4facfe;
+border:none;
+color:white;
+cursor:pointer;
+border-radius:5px;
+}
+
+.logout{
+background:red;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="navbar">
+<div>Teacher Dashboard</div>
+<div>DoubtHub</div>
+</div>
+
+<div class="container">
+
+<div class="tools">
+
+<button onclick="openLive()">Live Lecture Board</button>
+
+<button onclick="openQR()">QR Access</button>
+
+<button class="logout" onclick="logout()">Logout</button>
+
+</div>
+
+<h2>Confusion Analytics</h2>
+
+<canvas id="topicChart"></canvas>
+
+</div>
+
+<script>
+
+function openLive(){
+window.location="live.html"
+}
+
+function openQR(){
+window.location="qr.html"
+}
+
+function logout(){
+localStorage.removeItem("role")
+window.location="home.html"
+}
+
+async function loadDashboard(){
+
+const res=await fetch("/getDoubts")
+const doubts=await res.json()
+
+let topics={}
+
+doubts.forEach(d=>{
+if(!topics[d.topic]){
+topics[d.topic]=0
+}
+topics[d.topic]++
+})
+
+const labels=Object.keys(topics)
+const dataValues=Object.values(topics)
+
+const ctx=document.getElementById("topicChart").getContext("2d")
+
+new Chart(ctx,{
+type:"bar",
+data:{
+labels:labels,
+datasets:[{
+label:"Number of Doubts",
+data:dataValues
+}]
+}
+})
+
+}
+
+loadDashboard()
+
+</script>
+
+</body>
+
+</html>

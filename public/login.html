@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>DoubtHub Login</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f5f7fb;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+
+.card{
+background:white;
+padding:30px;
+border-radius:10px;
+box-shadow:0 10px 20px rgba(0,0,0,0.1);
+width:300px;
+text-align:center;
+}
+
+input{
+width:100%;
+padding:10px;
+margin-top:10px;
+}
+
+button{
+margin-top:15px;
+padding:10px;
+width:100%;
+background:#4facfe;
+border:none;
+color:white;
+cursor:pointer;
+}
+
+.link{
+margin-top:10px;
+color:#4facfe;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h2>Login</h2>
+
+<input id="email" placeholder="Email">
+
+<input id="password" type="password" placeholder="Password">
+
+<button onclick="login()">Login</button>
+
+<div class="link" onclick="forgot()">Forgot Password?</div>
+
+<div class="link" onclick="signupPage()">Create Account</div>
+
+</div>
+
+<script>
+
+async function login(){
+
+let email=document.getElementById("email").value
+let password=document.getElementById("password").value
+
+const res=await fetch("/login",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({email,password})
+
+})
+
+const data=await res.json()
+
+if(data.role==="teacher"){
+
+localStorage.setItem("role","teacher")
+window.location="dashboard.html"
+
+}
+
+else if(data.role==="student"){
+
+localStorage.setItem("role","student")
+window.location="index.html"
+
+}
+
+else{
+
+alert("Invalid login")
+
+}
+
+}
+
+function signupPage(){
+
+window.location="signup.html"
+
+}
+
+function forgot(){
+
+window.location="forgot.html"
+
+}
+
+</script>
+
+</body>
+
+</html>

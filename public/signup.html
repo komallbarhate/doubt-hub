@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Create Account</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f5f7fb;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+
+.card{
+background:white;
+padding:30px;
+border-radius:10px;
+box-shadow:0 10px 20px rgba(0,0,0,0.1);
+width:300px;
+text-align:center;
+}
+
+input,select{
+width:100%;
+padding:10px;
+margin-top:10px;
+}
+
+button{
+margin-top:15px;
+padding:10px;
+width:100%;
+background:#4facfe;
+border:none;
+color:white;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h2>Create Account</h2>
+
+<input id="name" placeholder="Name">
+
+<input id="email" placeholder="Email">
+
+<input id="password" type="password" placeholder="Password">
+
+<select id="role">
+
+<option value="student">Student</option>
+<option value="teacher">Teacher</option>
+
+</select>
+
+<button onclick="signup()">Create Account</button>
+
+</div>
+
+<script>
+
+async function signup(){
+
+let name=document.getElementById("name").value
+let email=document.getElementById("email").value
+let password=document.getElementById("password").value
+let role=document.getElementById("role").value
+
+await fetch("/signup",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({name,email,password,role})
+
+})
+
+alert("Account created successfully")
+
+window.location="login.html"
+
+}
+
+</script>
+
+</body>
+
+</html>

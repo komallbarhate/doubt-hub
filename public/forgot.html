@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Reset Password</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f5f7fb;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+
+.card{
+background:white;
+padding:30px;
+border-radius:10px;
+box-shadow:0 10px 20px rgba(0,0,0,0.1);
+width:320px;
+text-align:center;
+}
+
+input{
+width:100%;
+padding:10px;
+margin-top:10px;
+border:1px solid #ccc;
+border-radius:5px;
+}
+
+button{
+margin-top:15px;
+padding:10px;
+width:100%;
+background:#4facfe;
+border:none;
+color:white;
+cursor:pointer;
+border-radius:5px;
+}
+
+.success{
+margin-top:15px;
+color:green;
+font-weight:bold;
+display:none;
+}
+
+.error{
+margin-top:15px;
+color:red;
+font-weight:bold;
+display:none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h2>Reset Password</h2>
+
+<input id="email" placeholder="Enter your email">
+
+<input id="password" type="password" placeholder="New password">
+
+<button onclick="reset()">Reset Password</button>
+
+<div id="successMsg" class="success">
+Password updated successfully
+</div>
+
+<div id="errorMsg" class="error">
+Email not found
+</div>
+
+</div>
+
+<script>
+
+async function reset(){
+
+let email=document.getElementById("email").value
+let password=document.getElementById("password").value
+
+const res=await fetch("/resetPassword",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({email,password})
+
+})
+
+const data=await res.json()
+
+if(data.error){
+
+document.getElementById("errorMsg").style.display="block"
+document.getElementById("successMsg").style.display="none"
+
+}
+else{
+
+document.getElementById("successMsg").style.display="block"
+document.getElementById("errorMsg").style.display="none"
+
+setTimeout(()=>{
+
+window.location="login.html"
+
+},2000)
+
+}
+
+}
+
+</script>
+
+</body>
+
+</html>

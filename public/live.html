@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Live Lecture Board</title>
+
+<script>
+
+/* PAGE LOCK */
+
+if(localStorage.getItem("role")!=="teacher"){
+
+alert("Teachers only")
+
+window.location="home.html"
+
+}
+
+</script>
+
+<style>
+
+body{
+background:black;
+color:white;
+font-family:Arial;
+padding:30px;
+}
+
+.doubt{
+margin-top:20px;
+font-size:20px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Live Lecture Doubts</h1>
+
+<div id="list"></div>
+
+<script>
+
+async function load(){
+
+const res=await fetch("/getDoubts")
+const doubts=await res.json()
+
+const list=document.getElementById("list")
+list.innerHTML=""
+
+doubts.forEach(d=>{
+
+let div=document.createElement("div")
+div.className="doubt"
+
+div.innerHTML=d.name+" ("+d.topic+") : "+d.text
+
+list.appendChild(div)
+
+})
+
+}
+
+setInterval(load,2000)
+
+</script>
+
+</body>
+
+</html>
