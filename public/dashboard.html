@@ -1,3 +1,16 @@
+<script>
+
+let user=JSON.parse(localStorage.getItem("user"))
+
+if(!user){
+window.location="login.html"
+}
+
+if(user.role!=="teacher"){
+window.location="index.html"
+}
+
+</script>
 <!DOCTYPE html>
 <html>
 

@@ -16,7 +16,13 @@ app.use(cors())
 app.use(bodyParser.json())
 app.use(express.static("public"))
 
-mongoose.connect("mongodb://localhost:27017/doubts")
+app.get("/", (req,res)=>{
+res.sendFile(__dirname + "/public/login.html")
+})
+
+mongoose.connect(process.env.MONGO_URI || "mongodb://localhost:27017/doubts")
+.then(()=>console.log("MongoDB connected"))
+.catch(err=>console.log(err))
 
 /* SIGNUP */
 
@@ -67,29 +73,6 @@ res.json({error:"Invalid login"})
 
 })
 
-/* RESET PASSWORD */
-
-app.post("/resetPassword", async (req,res)=>{
-
-let email=req.body.email
-let password=req.body.password
-
-let user=await User.findOne({email:email})
-
-if(!user){
-
-return res.json({error:"User not found"})
-
-}
-
-user.password=password
-
-await user.save()
-
-res.json({success:true})
-
-})
-
 /* ADD DOUBT */
 
 app.post("/addDoubt", async (req,res)=>{
@@ -100,9 +83,7 @@ let topic=req.body.topic
 let anonymous=req.body.anonymous
 
 if(anonymous){
-
 name="Anonymous"
-
 }
 
 let existing=await Doubt.findOne({text:text,topic:topic})

@@ -3,7 +3,7 @@
 
 <head>
 
-<title>DoubtHub Login</title>
+<title>Login</title>
 
 <style>
 
@@ -14,7 +14,6 @@ display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
-margin:0;
 }
 
 .card{
@@ -42,12 +41,6 @@ color:white;
 cursor:pointer;
 }
 
-.link{
-margin-top:10px;
-color:#4facfe;
-cursor:pointer;
-}
-
 </style>
 
 </head>
@@ -64,9 +57,9 @@ cursor:pointer;
 
 <button onclick="login()">Login</button>
 
-<div class="link" onclick="forgot()">Forgot Password?</div>
+<br><br>
 
-<div class="link" onclick="signupPage()">Create Account</div>
+<a href="signup.html">Create Account</a>
 
 </div>
 
@@ -77,51 +70,35 @@ async function login(){
 let email=document.getElementById("email").value
 let password=document.getElementById("password").value
 
-const res=await fetch("/login",{
-
+let res=await fetch("/login",{
 method:"POST",
-
 headers:{
 "Content-Type":"application/json"
 },
-
 body:JSON.stringify({email,password})
-
 })
 
-const data=await res.json()
+let data=await res.json()
+
+if(data.error){
+
+alert("Invalid login")
+
+}else{
+
+localStorage.setItem("user",JSON.stringify(data))
 
 if(data.role==="teacher"){
 
-localStorage.setItem("role","teacher")
 window.location="dashboard.html"
 
-}
+}else{
 
-else if(data.role==="student"){
-
-localStorage.setItem("role","student")
 window.location="index.html"
 
 }
 
-else{
-
-alert("Invalid login")
-
 }
-
-}
-
-function signupPage(){
-
-window.location="signup.html"
-
-}
-
-function forgot(){
-
-window.location="forgot.html"
 
 }
 
